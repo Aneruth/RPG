@@ -7,8 +7,29 @@ def showInstructions():
   print('''
 RPG Game
 ========
+    _____________________________________________
+    |                         |                 |
+    |                         |                 |
+    |                                           |                     N
+    |                               Dining      |                     |
+    |           Hall          |                 |                 W<----->E
+    |                         |_______    ______|                     |
+    |                         |                                       S
+    |__________     __________|
+    |                         |
+    |                         |
+    |
+    |        Kitchen                     Garden
+    |                         |
+    |                         |
+    |_________________________|
 
-Get to the Garden with the key 
+
+
+
+
+
+Get to the Garden with the key
 Avoid Monsters
 
 Commands:
@@ -33,38 +54,30 @@ inventory = []
 #a dictionary linking a room to other rooms
 rooms = {
 
-            'Hall' : { 
+            'Hall' : {
                   'south' : 'Kitchen',
-                  'east'  : 'Dinning Room' 
+                  'east'  : 'Dinning Room'
                 },
 
             'Kitchen' : {
                   'north' : 'Hall',
+                  'east'  : 'Garden',
                   'item'  : 'Monster'
-                },
-                'Dinning Room':{
-                   'west': 'Hall'
                 },
         'Hall'  :{
                'south' : 'Kitchen',
                'east'  : 'Dinning Room',
                'item'  : 'key'
         },
-        
-        'Kitchen' : {
-              'north' : 'Hall',
-              'south' : 'Garden',
-              'item'  : 'Monster'
-        },
-        
-        "Dinning Room" :{
+        'Dinning Room' :{
                       'west': 'Hall',
                       'south': 'Garden',
                       'item' : 'potion'
         },
-        
+
         'Garden' :{
-          'north' : 'Dinning Room'
+          'north' : 'Dinning Room',
+          'west'  : 'Kitchen'
         }
 
          }
@@ -84,9 +97,9 @@ while True:
   #eg typing 'go east' would give the list:
   #['go','east']
   move = ''
-  while move == '':  
+  while move == '':
     move = input('>')
-    
+
   move = move.lower().split()
 
   #if they type 'go' first
@@ -113,13 +126,18 @@ while True:
     else:
       #tell them they can't get it
       print('Can\'t get ' + move[1] + '!')
-      
+
   #if player enters the monster's room
   if 'item' in rooms[currentRoom] and 'Monster' in rooms[currentRoom]['item']:
-    print('HA HA HA HA!!!!! Game Over')
-    break
-      
+      if 'potion' in inventory:
+          print('You destroyed the monster!')
+          del rooms[currentRoom]['item']
+          inventory.remove('potion')
+      else:
+          print('You were eaten by monster! Game Over')
+          break
+
   #if player wins when they get to garden
   if currentRoom=='Garden' and 'key' in inventory and 'potion' in inventory:
-    print('You Win :-D')
+    print('You Win ! :)')
     break
